@@ -98,7 +98,7 @@ int parse_uri(char * uri,char * filename,char * cgiargs){
             strcpy(cgiargs,"");
         }
         strcpy(filename,".");
-        strcpy(filename,uri);
+        strcat(filename,uri);
         return 0;
     }
 }
@@ -106,6 +106,7 @@ void serve_static(int fd,char * filename,int filesize){
     int srcfd;
     char * srcp,filetype[MAXLINE],buf[MAXLINE];
     get_filetype(filename,filetype);
+    
     sprintf(buf,"HTTP/1.0 200 OK\r\n");
     sprintf(buf,"%sServer: Tiny Web Server\r\n",buf);
     sprintf(buf,"%sContent-length: %d\r\n",buf,filesize);
@@ -136,6 +137,7 @@ void serve_dynamic(int fd,char * filename,char * cgiargs){
     if(Fork()==0){
         setenv("QUERY_STRING",cgiargs,1);
         Dup2(fd,STDOUT_FILENO);
+        printf("Hello world");
         Execve(filename,emptylist,environ);
     }
     Wait(NULL);

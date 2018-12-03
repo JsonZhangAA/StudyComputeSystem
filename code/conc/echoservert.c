@@ -38,4 +38,19 @@ void *thread(void *vargp)
     Close(connfd);
     return NULL;
 }
+void echo(int connfd){
+    printf("connfd: %d\n",connfd);
+    size_t n;
+    char buf[MAXLINE];
+    rio_t rio;
+    Rio_readinitb(&rio,connfd);
+    while((n=Rio_readlineb(&rio,buf,MAXLINE))!=0){
+        printf("server received %d bytes from %d\n",n,connfd);
+        printf("message: %s\n",buf);
+	if(connfd==4)
+	        Rio_writen(5,buf,n);
+	else
+		Rio_writen(4,buf,n);
+    }
+}
 /* $end echoservertmain */
